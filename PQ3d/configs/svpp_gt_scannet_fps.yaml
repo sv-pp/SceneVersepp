@@ -1,0 +1,180 @@
+# Experiment general info
+name: "SVPP_PQ3D"
+base_dir: "outputs"
+exp_dir: "svpp_1k/params_tuning/svpp_gt_scannet_fps"
+note: "svpp_1k/params_tuning/svpp_gt_scannet_fps"
+naming_keywords: ["note", "time"]
+
+rng_seed: 42
+num_gpu: 4
+mode: "train"
+
+resume: False
+pretrain_ckpt_path: 'svpp_1k/svpp_gt/ckpt/best.pth'
+
+debug:
+  flag: False
+  debug_size: 10
+  debug_start: 0
+  debug_end: 100
+
+
+logger:
+  name: wandb
+  entity: bigai-gvl
+  autoname: True
+
+# dataset details
+data:
+  train: ['ScanNetInstSegSceneVerse']
+  val: ['ScanNetInstSegSceneVerse']
+  test: ['ScanNetInstSegSceneVerse']
+
+  load_scan_options:
+    load_inst_info: True
+    load_pc_info: True
+    load_segment_info: True
+    load_image_segment_feat: False
+    load_point_segment_feat: False
+    load_image_obj_feat: False
+    load_voxel_obj_feat: False
+  
+  instseg_options:
+    num_labels: 200
+    ignore_label: -100
+    filter_out_classes: [0, 2]
+    voxel_size: 0.02
+    num_queries: 120
+    query_sample_strategy: 'fps'
+    offline_mask_source: null
+    image_augmentations_path: configs/instseg/augmentation/albumentations_aug.yaml
+    volume_augmentations_path: configs/instseg/augmentation/volumentations_aug.yaml
+
+  scene_verse_base: /share/generalvision/zhangyaowei/dataset/PQ3D/base
+  scene_verse_aux: /share/generalvision/zhangyaowei/dataset/PQ3D/aux
+  scene_verse_pred:  /share/generalvision/zhangyaowei/dataset/PQ3DScanNet/scene_verse_pred
+
+# dataloader details
+dataloader:
+  # This is a per-gpu batchsize
+  batchsize: 8
+  batchsize_eval: 1
+  num_workers: 1
+  
+task: InstSeg
+data_wrapper: InstSegDatasetWrapper
+
+# Training details
+trainer: Query3DTrainer
+
+solver:
+  gradient_accumulation_steps: 1
+  lr: 1e-4
+  grad_norm: 80
+  epochs: 600
+  epochs_per_eval: 200
+  optim:
+    name: AdamW
+    args:
+      betas: [0.9, 0.98]
+  sched:
+    name: warmup_cosine
+    args:
+      warmup_steps: 0
+  epochs_per_save: 50
+
+eval:
+  name: InstSegEval
+  pass_kwargs: True
+  save: False
+  topk_per_scene: 100
+  use_dbscan: False
+  ignore_label: ${data.instseg_options.ignore_label}
+  dataset_name: ScanNet
+
+pretrained_weights_dir: pointnet_tokenizer.bin
+model:
+  name: Query3DUnified
+  memories: [voxel]
+  hidden_size: 768
+  use_offline_voxel_fts: False
+  use_offline_attn_mask: False
+  obj_loc:
+    spatial_dim: 5
+    dim_loc: 3
+    pairwise_rel_type: "center"
+  voxel_encoder:
+    name: PCDMask3DSegLevelEncoder
+    args:
+      backbone_kwargs:
+        config:
+          dialations: [ 1, 1, 1, 1 ]
+          conv1_kernel_size: 5
+          bn_momentum: 0.02
+        in_channels: 3
+        out_channels: 200
+        out_fpn: true
+      freeze_backbone: False # train only the projection layer
+      hlevels: [0,1,2,3]
+      hidden_size: ${model.hidden_size}
+      dropout: 0.1
+
+  mv_encoder:
+    name: ObjectEncoder
+    args:
+      input_feat_size : 768
+      hidden_size: ${model.hidden_size}
+      use_projection: True
+      use_cls_head: False
+      dropout: 0.1
+
+  pc_encoder:
+    name: ObjectEncoder
+    args:
+      input_feat_size : 768
+      hidden_size: ${model.hidden_size}
+      use_projection: True
+      use_cls_head: False
+      dropout: 0.1
+
+  unified_encoder:
+    name: QueryMaskEncoder
+    args:
+      hidden_size: ${model.hidden_size}
+      num_attention_heads: 12
+      num_layers: 4
+      spatial_selfattn: True
+      memories: ${model.memories}
+      structure: "parallel"
+      use_self_mask: true
+      num_blocks: 3
+
+  heads: [mask]
+  mask_head:
+    name: "MaskHeadSegLevel"
+    args:
+      hidden_size: ${model.hidden_size}
+      num_targets: 201
+      memories_for_match: ${model.memories}
+      filter_out_classes: ${data.instseg_options.filter_out_classes}
+  
+  loss_list: [InstSegLoss]
+  vis_loss_list: []
+
+  InstSegLoss:
+    criterion_type: 'set'
+
+    criterion:
+      num_classes: ${data.instseg_options.num_labels}
+      losses: [labels, masks]
+      num_points: -1
+      class_weights: -1
+      ignore_label: ${data.instseg_options.ignore_label}
+
+    matcher:
+      cost_class: 2.
+      cost_mask: 5.
+      cost_dice: 2.
+      num_points: -1 # use all points for matching
+      ignore_label: ${data.instseg_options.ignore_label}
+
