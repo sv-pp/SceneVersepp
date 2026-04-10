@@ -1,0 +1,73 @@
+# Bytecode / caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+
+# Build / packaging
+build/
+dist/
+site/
+wheelhouse/
+pip-wheel-metadata/
+
+# Logs / runtime files
+*.log
+*.out
+*.err
+*.pid
+*.pid.lock
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Python tooling
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Model / training outputs
+checkpoints/
+outputs/
+runs/
+logs/
+wandb/
+tensorboard/
+lightning_logs/
+
+# Project data / generated artifacts
+data/
+datasets/
+training_datas/
+saved_models/
+pretrained/
+results/
+tmp/
+temp/
+
+# Common binary artifacts
+*.pth
+*.pt
+*.ckpt
+*.npz
+*.npy
+*.pkl
+*.pickle
+
+# Misc
+.codex/

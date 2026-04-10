@@ -1,0 +1,53 @@
+### model
+model_name_or_path: ./models/basemodel
+trust_remote_code: true
+train_from_scratch: false
+
+### method
+do_train: true
+freeze_language_tower: false
+freeze_point_tower: false
+train_proj_only: false
+resume_from_checkpoint: false
+
+### dataset
+dataset: svpp_train # arkitscenes_train,arkitscenes_val
+# dataset_dir: /mnt/fillipo/yaowei/svpp_release_data/spatiallm_svpp_1k # arkitscenes-spatiallm
+dataset_dir: ./data # arkitscenes-spatiallm
+template: spatiallm_qwen # spatiallm_qwen, spatiallm_llama
+num_bins: 1280
+do_augmentation: false
+random_rotation: true
+cutoff_len: 8192
+overwrite_cache: true
+preprocessing_num_workers: 8
+dataloader_num_workers: 8
+save_dir: saves/svpp_pretrain
+
+### output
+output_dir: saves/svpp_pretrain
+logging_steps: 10
+save_steps: 500
+overwrite_output_dir: false
+save_total_limit: 20
+
+### train
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 1
+learning_rate: 1.0e-5 # to be more aggressive: try to change the learning rate to 5.0e-5 or 1.0e-4
+num_train_epochs: 500
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+pure_bf16: false
+bf16: false
+fp16: false
+tf32: true
+ddp_timeout: 180000000
+report_to: wandb # choices: [none, wandb, tensorboard, swanlab]
+max_new_tokens: 4096
+
+### eval
+val_size: 0.0001
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 5000
