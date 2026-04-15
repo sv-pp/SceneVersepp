@@ -43,6 +43,23 @@ def load_scan(pcd_path: Path, inst2label_path: Path):
 def make_safe_entity_name(name: str) -> str:
     return name.replace(" ", "_").replace("/", "_")
 
+
+def resolve_mesh_file(data_root: Path, scene_name: str, dataset_name: str) -> Path:
+    scene_root = data_root / scene_name
+    candidates = []
+    if dataset_name.lower() == "scannet":
+        candidates.append(scene_root / f"{scene_name}_vh_clean_2.rot.ply")
+        # candidates.append(scene_root / f"{scene_name}_vh_clean_2.ply")
+    else:
+        candidates.append(scene_root / "mesh.ply")
+        # candidates.append(scene_root / f"{scene_name}_vh_clean_2.rot.ply")
+
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
+
 def visualize_segments(scan: Scan):
 
     # just for vis segments.s.k.json
@@ -146,7 +163,7 @@ if __name__ == "__main__":
     else:
         scene_names = [d.name for d in data_root.iterdir() if d.is_dir()]
     for scene_name in scene_names:
-        mesh_file = Path(data_root / scene_name / "mesh.ply")
+        mesh_file = resolve_mesh_file(data_root, scene_name, args.dataset_name)
         segments_file = Path(segments_path / f"{scene_name}.{s_str}_{k}.segs.json")
         pcd_file = Path(pcd_path / f"{scene_name}.pth")
         aux_file = Path(inst2label_path / f"{scene_name}.pth")

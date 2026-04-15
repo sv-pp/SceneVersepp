@@ -1,15 +1,21 @@
 save_root: ./training_datas
 aux_dir: aux
 base_dir: base 
-process_dataset: [svpp]
+process_dataset: [svpp] # [svpp, ScanNet] are process svpp and scannet dataset
 workers: 16
 datasets:
     svpp:
-        data_root: /mnt/fillipo/yaowei/svpp_release_data/svpp_data
+        data_root: "" #svpp data root 
         process_number: 20
         segmentator_s: 0.1
         segmentator_k: 100
         resplit_aug: True
+    ScanNet:
+        data_root: "" #scannet data root 
+        process_number: 20
+        segmentator_s: 0.1
+        segmentator_k: 10
+        resplit_aug: False
 
 
 
