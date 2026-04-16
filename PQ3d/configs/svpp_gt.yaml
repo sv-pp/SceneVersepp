@@ -54,9 +54,6 @@ data:
   scene_verse_base: training_datas/base
   scene_verse_aux: training_datas/aux
   scene_verse_pred:  training_datas/scene_verse_pred
-  # scene_verse_base: /mnt/fillipo/yaowei/pq3d_svpp_data/PQ3D/base
-  # scene_verse_aux: /mnt/fillipo/yaowei/pq3d_svpp_data/PQ3D/aux
-  # scene_verse_pred:  /share/generalvision/zhangyaowei/dataset/PQ3DScanNet/scene_verse_pred
 
 # dataloader details
 dataloader:

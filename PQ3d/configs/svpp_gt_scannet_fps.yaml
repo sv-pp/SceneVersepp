@@ -1,8 +1,8 @@
 # Experiment general info
 name: "SVPP_PQ3D"
 base_dir: "outputs"
-exp_dir: "svpp_1k/params_tuning/svpp_gt_scannet_fps"
-note: "svpp_1k/params_tuning/svpp_gt_scannet_fps"
+exp_dir: "exp_results/svpp_gt_scannet_fps"
+note: "exp_results/svpp_gt_scannet_fps"
 naming_keywords: ["note", "time"]
 
 rng_seed: 42
@@ -10,7 +10,7 @@ num_gpu: 4
 mode: "train"
 
 resume: False
-pretrain_ckpt_path: 'svpp_1k/svpp_gt/ckpt/best.pth'
+pretrain_ckpt_path: 'exp_results/svpp_gt/ckpt/best.pth' #change the with the pretrain model
 
 debug:
   flag: False
@@ -50,9 +50,9 @@ data:
     image_augmentations_path: configs/instseg/augmentation/albumentations_aug.yaml
     volume_augmentations_path: configs/instseg/augmentation/volumentations_aug.yaml
 
-  scene_verse_base: /share/generalvision/zhangyaowei/dataset/PQ3D/base
-  scene_verse_aux: /share/generalvision/zhangyaowei/dataset/PQ3D/aux
-  scene_verse_pred:  /share/generalvision/zhangyaowei/dataset/PQ3DScanNet/scene_verse_pred
+  scene_verse_base: training_datas/base
+  scene_verse_aux: training_datas/aux
+  scene_verse_pred:  training_datas
 
 # dataloader details
 dataloader:
