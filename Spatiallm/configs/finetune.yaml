@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: ./models/basemodel
+model_name_or_path: "" # the svpp pretrain model path
 trust_remote_code: true
 train_from_scratch: false
 
@@ -8,12 +8,10 @@ do_train: true
 freeze_language_tower: false
 freeze_point_tower: false
 train_proj_only: false
-resume_from_checkpoint: false
 
 ### dataset
-dataset: svpp_train # arkitscenes_train,arkitscenes_val
-# dataset_dir: /mnt/fillipo/yaowei/svpp_release_data/spatiallm_svpp_1k # arkitscenes-spatiallm
-dataset_dir: ./data # arkitscenes-spatiallm
+dataset: scannet_train # arkitscenes_train,arkitscenes_val
+dataset_dir: ./data/scannet # arkitscenes-spatiallm
 template: spatiallm_qwen # spatiallm_qwen, spatiallm_llama
 num_bins: 1280
 do_augmentation: false
@@ -22,14 +20,14 @@ cutoff_len: 8192
 overwrite_cache: true
 preprocessing_num_workers: 8
 dataloader_num_workers: 8
-save_dir: saves/svpp_pretrain
+save_dir: saves/svpp_1k_align/sft
 
 ### output
-output_dir: saves/svpp_pretrain
+output_dir: saves/svpp_1k_align/sft
 logging_steps: 10
-save_steps: 500
+save_steps: 1000
 overwrite_output_dir: false
-save_total_limit: 20
+save_total_limit: 5
 
 ### train
 per_device_train_batch_size: 4

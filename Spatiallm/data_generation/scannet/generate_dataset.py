@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-File: generate_dataset.py
-Author: zyw
-Date: 2025-09-23 11:12
-Description:
-    Convert preprocessed data to spatiallm data format.
-    Generate dataset json files for training and validation.
-"""
 
 import os
 import argparse
