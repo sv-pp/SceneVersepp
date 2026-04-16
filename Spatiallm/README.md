@@ -14,10 +14,6 @@ The workflow in this folder is:
 Please follow the official SpatialLM installation guide first. The commands below are the same style as the upstream project and are sufficient for the training and data-processing scripts in this folder.
 
 ```bash
-# clone the repository
-git clone https://github.com/manycore-research/SpatialLM.git
-cd SpatialLM
-
 # create a conda environment
 conda create -n spatiallm python=3.11
 conda activate spatiallm
@@ -29,15 +25,12 @@ poetry install
 
 # install the model-specific extra dependencies from the official guide
 # choose the one that matches your target model
-poe install-torchsparse
-# poe install-sonata
+# poe install-torchsparse
+poe install-sonata
 ```
 
 Notes:
-
-- The codebase is tested with Python 3.11.
-- Follow the upstream SpatialLM README if you need the exact CUDA / PyTorch combination.
-- Keep the repository root as the working directory when running the commands below.
+- Keep the Spatiallm as the working directory when running the commands below.
 
 ## 2. Data Generation
 
@@ -246,7 +239,7 @@ Run inference on a generated dataset JSON file:
 python inference.py \
   --data_file ./data/scannet/scannet_val.json \
   --output ./results/finetune \
-  --model_path ./saves/finetune/checkpoint-37500 \
+  --model_path ./saves/finetune/checkpoint-*** \
   --code_template_file ./code_template.txt \
   --detect_type object
 ```
