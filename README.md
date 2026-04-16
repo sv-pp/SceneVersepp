@@ -4,9 +4,9 @@ SceneVerse++ is a project for lifting unlabeled internet-scale data into structu
 
 Project page: <https://sv-pp.github.io/>
 
-Paper: **Lifting Unlabeled Internet-level Data for 3D Scene Understanding** <https://arxiv.org/abs/2506.07491>
+Paper: [**Lifting Unlabeled Internet-level Data for 3D Scene Understanding** (CVPR 2026)](https://arxiv.org/abs/2506.07491)
 
-Hugging Face dataset: <https://huggingface.co/datasets/bigai/SceneVersepp>
+Hugging Face dataset: [bigai/SceneVersepp](https://huggingface.co/datasets/bigai/SceneVersepp)
 
 ## TODO
 
@@ -72,4 +72,3 @@ This repository is built on top of:
 
 - [PQ3D](https://github.com/PQ3D/PQ3D/tree/main)
 - [SpatialLM](https://github.com/manycore-research/SpatialLM)
-
