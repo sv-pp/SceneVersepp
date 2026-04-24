@@ -36,7 +36,20 @@ For detailed instructions, see the component-level documentation:
    huggingface-cli download bigai/SceneVersepp --repo-type dataset --local-dir ./svpp
    ```
 
-2. Generate the SpatialLM training data:
+2. Create the training environment and install dependencies:
+
+   ```bash
+   conda create -n svpp python=3.10
+   conda activate svpp
+   ```
+
+   Install the dependencies used by the scripts in [`scripts/`](/mnt/fillipo/yaowei/SceneVersepp/scripts):
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Generate the SpatialLM training data:
 
    ```bash
    cd Spatiallm
@@ -44,7 +57,7 @@ For detailed instructions, see the component-level documentation:
 
    Follow the detailed instructions in [`Spatiallm/README.md`](Spatiallm/README.md).
 
-3. Generate the PQ3D training data:
+4. Generate the PQ3D training data:
 
    ```bash
    cd PQ3d
@@ -52,6 +65,31 @@ For detailed instructions, see the component-level documentation:
 
    Follow the detailed instructions in [`PQ3d/README.md`](PQ3d/README.md).
 
+## Data Processing
+
+1. Download videos from YouTube:
+
+   ```bash
+   python scripts/download_videos.py ./svpp
+   ```
+
+   This script scans each scene folder that contains `data_info.json` and downloads the corresponding YouTube video as `video.mp4`.
+
+2. Extract images:
+
+   ```bash
+   python scripts/extract_images.py ./svpp
+   ```
+
+   This script reads `data_frames` from `data_info.json`, saves raw frames to `images/`, and saves cropped frames to `crop_images/`.
+
+3. Visualize camera poses:
+
+   ```bash
+   python scripts/view_camera_poses.py ./svpp --scene-name bedroom_100_3o5KSzfdOSE
+   ```
+
+   This script loads `mesh.ply` and `camera_info.json` for one scene and visualizes the camera poses with Open3D.
 
 ## Citation
 
