@@ -1,106 +1,82 @@
-# SceneVerse++
+<div align="center">
 
-SceneVerse++ is a project for lifting unlabeled internet-scale data into structured 3D scene understanding. It focuses on generating and using large-scale 3D supervision for tasks such as 3D object detection, instance segmentation, spatial VQA, and vision-language navigation.
+<h2 align="center" style="font-size:24px;">
+  <b>Lifting Unlabeled Internet-level Data for 3D Scene Understanding</b>
+  <br>
+  <b><i>CVPR 2026 </i></b>
+</h2>
 
-Project page: <https://sv-pp.github.io/>
 
-Paper: [**Lifting Unlabeled Internet-level Data for 3D Scene Understanding** (CVPR 2026)](https://arxiv.org/abs/2506.07491)
+[![Project Page](https://img.shields.io/badge/Project%20Page-sv--pp.github.io-6cb4ee?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sv-pp.github.io/)
+[![arXiv](https://img.shields.io/badge/arXiv-2506.07491-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2506.07491)
+[![Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-bigai%2FSceneVersepp-yellow?style=for-the-badge)](https://huggingface.co/datasets/bigai/SceneVersepp)
 
-Hugging Face dataset: [bigai/SceneVersepp](https://huggingface.co/datasets/bigai/SceneVersepp)
+<img src="assets/teaser.png" alt="SceneVerse++ teaser" width="95%">
 
-## TODO
+</div>
 
-- [x] 3D detection training code: `Spatiallm`
-- [x] 3D segmentation training code: `PQ3d`
-- [ ] Data generation from web video
+## TL;DR
 
-## Repository Structure
+Annotated 3D scene data is scarce. We build an automated data engine that lifts web videos into structured 3D supervision — instance-level point clouds, object layouts, spatial VQA, and vision-language navigation — and show through experiments that this generated data has strong potential to supplement the broad 3D scene understanding.
 
-```text
-.
-├── PQ3d/           # 3D segmentation training code with PQ3D
-├── Spatiallm/      # 3D detection training code with SpatialLM
-├── scripts/        # data processing utilities for web videos, frames, and camera poses
-├── requirements.txt
-└── README.md
+## What's in this repo
+
+This is the public release of the training code and data pipeline from the paper.
+
+| Directory | Purpose |
+| --- | --- | 
+| [`PQ3D/`](PQ3D/) | 3D instance segmentation training | 
+| [`SpatialLM/`](SpatialLM/) | 3D object detection training |  
+| [`data_processing/`](data_processing/) | Video download, frame extraction, camera-pose visualization for the SVPP dataset | 
+
+<!-- ## Roadmap
+
+- [x] 3D detection training code (SpatialLM)
+- [x] 3D segmentation training code (PQ3D)
+- [ ] Data generation from web video -->
+
+## Quick start
+
+### 1. Get the dataset
+
+```bash
+huggingface-cli download bigai/SceneVersepp --repo-type dataset --local-dir ./svpp
 ```
 
-- `PQ3d/`: preprocessing, segmentation-oriented data generation, visualization, and training code based on PQ3D
-- `Spatiallm/`: layout generation, dataset construction, training, inference, visualization, and evaluation code based on SpatialLM
-- `scripts/`: codes for downloading source videos, extracting frames, and visualizing camera poses
-- `requirements.txt`: dependencies used by the scripts in `scripts/`
+### 2. Set up the data-processing environment
 
-For detailed instructions, see the component-level documentation:
+The scripts in [`data_processing/`](data_processing/) (video download, frame extraction, pose visualization) use a light-weight environment defined by [`requirements.txt`](requirements.txt):
 
-- [`PQ3d/README.md`](PQ3d/README.md)
-- [`Spatiallm/README.md`](Spatiallm/README.md)
+```bash
+conda create -n svpp python=3.10 -y
+conda activate svpp
+pip install -r requirements.txt
+```
 
-## Quick Start
+> The training stacks under `PQ3D/` and `SpatialLM/` each have their own heavier environments. See their respective READMEs.
 
-1. Download the Hugging Face dataset:
+### 3. Process the raw videos
 
-   ```bash
-   huggingface-cli download bigai/SceneVersepp --repo-type dataset --local-dir ./svpp
-   ```
+```bash
+# Download YouTube videos referenced by each scene's data_info.json
+python data_processing/download_videos.py ./svpp
 
-2. Create the training environment and install dependencies:
+# Extract raw and cropped frames into images/ and crop_images/
+python data_processing/extract_images.py ./svpp
 
-   ```bash
-   conda create -n svpp python=3.10
-   conda activate svpp
-   ```
+# (Optional) Visualize camera poses for one scene with Open3D
+python data_processing/view_camera_poses.py ./svpp --scene-name bedroom_100_3o5KSzfdOSE
+```
 
-   Install the dependencies used by the scripts in [`scripts/`](/mnt/fillipo/yaowei/SceneVersepp/scripts):
+### 4. Train
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+Each training stack is independent and ships with its own `README.md`:
 
-3. Generate the SpatialLM training data:
+- [`PQ3D/README.md`](PQ3D/README.md) — segmentation data generation and two-stage training
+- [`SpatialLM/README.md`](SpatialLM/README.md) — layout generation, pretraining, fine-tuning, inference, and evaluation
 
-   ```bash
-   cd Spatiallm
-   ```
-
-   Follow the detailed instructions in [`Spatiallm/README.md`](Spatiallm/README.md).
-
-4. Generate the PQ3D training data:
-
-   ```bash
-   cd PQ3d
-   ```
-
-   Follow the detailed instructions in [`PQ3d/README.md`](PQ3d/README.md).
-
-## Data Processing
-
-1. Download videos from YouTube:
-
-   ```bash
-   python scripts/download_videos.py ./svpp
-   ```
-
-   This script scans each scene folder that contains `data_info.json` and downloads the corresponding YouTube video as `video.mp4`.
-
-2. Extract images:
-
-   ```bash
-   python scripts/extract_images.py ./svpp
-   ```
-
-   This script reads `data_frames` from `data_info.json`, saves raw frames to `images/`, and saves cropped frames to `crop_images/`.
-
-3. Visualize camera poses:
-
-   ```bash
-   python scripts/view_camera_poses.py ./svpp --scene-name bedroom_100_3o5KSzfdOSE
-   ```
-
-   This script loads `mesh.ply` and `camera_info.json` for one scene and visualizes the camera poses with Open3D.
 
 ## Citation
-
-If you use this project, please cite the SceneVerse++ paper:
 
 ```bibtex
 @inproceedings{chen2026lifting,
@@ -113,7 +89,7 @@ If you use this project, please cite the SceneVerse++ paper:
 
 ## Acknowledgements
 
-This repository is built on top of:
+This repository builds on:
 
-- [PQ3D](https://github.com/PQ3D/PQ3D/tree/main)
+- [PQ3D](https://github.com/PQ3D/PQ3D)
 - [SpatialLM](https://github.com/manycore-research/SpatialLM)
