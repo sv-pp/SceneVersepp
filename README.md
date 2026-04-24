@@ -18,10 +18,17 @@ Hugging Face dataset: [bigai/SceneVersepp](https://huggingface.co/datasets/bigai
 
 ```text
 .
-├── PQ3d/        # 3D segmentation training code with PQ3D
-├── Spatiallm/   # 3D detection training code with SpatialLM
+├── PQ3d/           # 3D segmentation training code with PQ3D
+├── Spatiallm/      # 3D detection training code with SpatialLM
+├── scripts/        # data processing utilities for web videos, frames, and camera poses
+├── requirements.txt
 └── README.md
 ```
+
+- `PQ3d/`: preprocessing, segmentation-oriented data generation, visualization, and training code based on PQ3D
+- `Spatiallm/`: layout generation, dataset construction, training, inference, visualization, and evaluation code based on SpatialLM
+- `scripts/`: codes for downloading source videos, extracting frames, and visualizing camera poses
+- `requirements.txt`: dependencies used by the scripts in `scripts/`
 
 For detailed instructions, see the component-level documentation:
 
