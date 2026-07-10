@@ -8,7 +8,7 @@
 
 
 [![Project Page](https://img.shields.io/badge/Project%20Page-sv--pp.github.io-6cb4ee?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sv-pp.github.io/)
-[![arXiv](https://img.shields.io/badge/arXiv-2506.07491-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2506.07491)
+[![arXiv](https://img.shields.io/badge/arXiv-2604.01907-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2604.01907)
 [![Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-bigai%2FSceneVersepp-yellow?style=for-the-badge)](https://huggingface.co/datasets/bigai/SceneVersepp)
 
 <img src="assets/teaser.png" alt="SceneVerse++ teaser" width="95%">
